@@ -1,0 +1,27 @@
+#!/usr/bin/env perl
+use strict;
+use warnings;
+use PAD;
+use Plack::Runner;
+
+my $class = 'PAD::Plugin::Static';
+my $subclass = shift;
+
+if ($subclass) {
+    if ($subclass =~ /^\+(.+)/) {
+        $class = $1;
+    } else {
+        $class = "PAD::Plugin::$subclass";
+    }
+}
+
+my $pad = PAD->new(
+    class => $class
+);
+
+my $app = $pad->psgi_app;
+
+my $runner = Plack::Runner->new;
+$runner->parse_options(@ARGV);
+$runner->run($app);
+
