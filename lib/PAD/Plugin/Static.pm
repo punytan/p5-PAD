@@ -15,8 +15,7 @@ sub content_type {
 sub execute {
     my ($self, $req) = @_;
     my $path = "./" . $req->path_info;
-    Plack::App::File->new->serve_path($req->env, $path);
-    return Plack::App::Directory->new->to_app->($req->env);
+    Plack::App::Directory->new->to_app->($req->env);
 }
 
 1;
