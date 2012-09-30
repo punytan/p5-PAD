@@ -2,60 +2,71 @@ package PAD;
 use strict;
 use warnings;
 our $VERSION = '0.01';
-use Plack::Runner;
 use Plack::Request;
 use Plack::App::Directory;
 
 sub new {
     my ($class, %args) = @_;
-    $class->require($args{class});
-    bless { %args }, $class;
+    my $plugin = $args{plugin};
+
+    __PACKAGE__->require($plugin);
+
+    bless {
+        plugin => $plugin,
+        args   => \%args,
+    }, $class;
 }
+
+sub plugin { shift->{plugin} }
 
 sub psgi_app {
     my $self = shift;
+
     return sub {
         my $req  = Plack::Request->new(shift);
+
         my $path = $req->path_info;
         $path =~ s/[\/\\\0]//g;
-
         if ($path eq '/' || $path eq 'favicon.ico' || not $path) {
             return Plack::App::Directory->new->to_app->($req->env);
         }
 
-        if ($path =~ $self->class->suffix) {
-            return $self->class->execute($req, $path);
-        }
+        my $plugin = $self->plugin->new(
+            %{ $self->{args} },
+            request => $req,
+        );
 
-        return Plack::App::Directory->new->to_app->($req->env);
+        return $req->path_info =~ $plugin->suffix
+            ? $plugin->execute
+            : Plack::App::Directory->new->to_app->($req->env);
     };
 }
 
 sub require {
-    my (undef, $class, $method) = @_;
-    unless ($class->can($method || "new")) {
+    my (undef, $class) = @_;
+    unless ($class->can("new")) {
         my $path = $class;
         $path =~ s|::|/|g;
         require "$path.pm"; ## no critic
     }
 }
 
-sub class { shift->{class} }
-
 1;
 __END__
 
 =head1 NAME
 
-PAD -
+PAD - create PSGI app that serve filtered files
 
 =head1 SYNOPSIS
 
-  use PAD;
+    use PAD;
+    my $pad = PAD->new(plugin => $class);
+    my $app = $pad->psgi_app;
 
 =head1 DESCRIPTION
 
-PAD is
+PAD is useful HTTP server 
 
 =head1 AUTHOR
 

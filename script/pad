@@ -15,13 +15,43 @@ if ($subclass) {
     }
 }
 
-my $pad = PAD->new(
-    class => $class
-);
-
+my $pad = PAD->new(plugin => $class);
 my $app = $pad->psgi_app;
 
 my $runner = Plack::Runner->new;
 $runner->parse_options(@ARGV);
 $runner->run($app);
+
+__END__
+
+=head1 NAME
+
+pad - run Plack::App::Direcoty with filter plugins
+
+=head1 SYNOPSIS
+
+    # run HTTP server that serves current directory
+    pad
+    pad Static
+
+    # enable PAD::Plugin::Markdown
+    pad Markdown
+
+    # listen on different port
+    pad Static --port 8080
+
+=head1 AUTHOR
+
+punytan E<lt>punytan@gmail.comE<gt>
+
+=head1 SEE ALSO
+
+L<PAD>
+
+=head1 LICENSE
+
+This library is free software; you can redistribute it and/or modify
+it under the same terms as Perl itself.
+
+=cut
 

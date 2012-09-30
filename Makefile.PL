@@ -2,17 +2,17 @@ use inc::Module::Install;
 name 'PAD';
 all_from 'lib/PAD.pm';
 
+requires 'Plack::Runner';
 requires 'Plack::App::Directory';
 requires 'Plack::App::File';
-requires 'Plack::MIME';
 requires 'Plack::Request';
-requires 'Plack::Runner';
 requires 'Text::Markdown';
+test_requires 'Plack::Request';
+test_requires 'Test::Requires';
 
 tests 't/*.t';
 author_tests 'xt';
 
-test_requires 'Test::More';
 auto_set_repository;
 auto_include;
 
