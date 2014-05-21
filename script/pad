@@ -3,9 +3,18 @@ use strict;
 use warnings;
 use PAD;
 use Plack::Runner;
+use Pod::Usage;
 
 my $class = 'PAD::Plugin::Static';
 my $subclass = shift;
+
+if ($subclass =~ /^(?:--help|--usage|-h)$/) {
+    pod2usage(0);
+}
+
+if ($subclass =~ /^-/) {
+    pod2usage(1);
+}
 
 if ($subclass) {
     if ($subclass =~ /^\+(.+)/) {
