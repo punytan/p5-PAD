@@ -7,6 +7,7 @@ requires 'Plack::App::Directory';
 requires 'Plack::App::File';
 requires 'Plack::Request';
 requires 'Text::Markdown';
+requires 'Pod::Usage';
 test_requires 'Plack::Request';
 test_requires 'Test::Requires';
 
