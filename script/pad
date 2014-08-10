@@ -6,7 +6,7 @@ use Plack::Runner;
 use Pod::Usage;
 
 my $class = 'PAD::Plugin::Static';
-my $subclass = shift;
+my $subclass = shift || '';
 
 if ($subclass =~ /^(?:--help|--usage|-h)$/) {
     pod2usage(0);
